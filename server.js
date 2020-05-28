@@ -8,44 +8,40 @@ app.set('view engine', '.hbs');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-/*
 app.use('/user', (req, res) => {
-  res.render('forbidden', { layout: false });
+  res.render('forbidden');
 });
-*/
 
 app.get('/', (req, res) => {
-res.render('index', { layout: false });
+res.render('index');
 });
 
-/*
 app.get('/home/', (req, res) => {
-  res.render('index', { layout: false });
+  res.render('index');
 });
-*/
 
 app.get('/about', (req, res) => {
-  res.render('about', { layout: false });
+  res.render('about');
 });
 
 app.get('/hello/:name', (req, res) => {
-  res.render('hello', { layout: false, name: req.params.name });
+  res.render('hello', { layout: true, name: req.params.name });
 });
 
 app.get('/contact', (req, res) => {
-  res.render('contact', { layout: false });
+  res.render('contact');
 });
 
 app.get('/info', (req, res) => {
-  res.render('info', { layout: false });
+  res.render('info');
 });
 
 app.get('/history', (req, res) => {
-  res.render('history', { layout: false });
+  res.render('history');
 });
 
 app.use((req, res) => {
-  res.status(404).render('404', { layout: false });
+  res.status(404).render('404');
 });
 
 app.listen(8000, () => {
