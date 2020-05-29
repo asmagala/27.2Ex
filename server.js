@@ -7,6 +7,7 @@ app.engine('.hbs', hbs());
 app.set('view engine', '.hbs');
 
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.urlencoded({extended: false}));
 
 app.use('/user', (req, res) => {
   res.render('forbidden');
@@ -28,20 +29,26 @@ app.get('/hello/:name', (req, res) => {
   res.render('hello', { layout: true, name: req.params.name });
 });
 
-app.get('/contact', (req, res) => {
-  res.render('contact');
-});
-
-app.post('/contact/send-message', (req, res) => {
-  res.json(req.body);
-});
-
 app.get('/info', (req, res) => {
   res.render('info');
 });
 
 app.get('/history', (req, res) => {
   res.render('history');
+});
+
+app.get('/contact', (req, res) => {
+  res.render('contact', { sendvisibility: "none", errvisibility: "none"});
+});
+
+app.post('/contact/send-message', (req, res) => {
+  const { author, sender, title, message } = req.body;
+  if(author && sender && title && message) {
+    res.render('contact', { sendvisibility: "flex", errvisibility: "none" });
+  }
+  else {
+    res.render('contact', { sendvisibility: "none", errvisibility: "flex"});
+  }
 });
 
 app.use((req, res) => {
