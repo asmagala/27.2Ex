@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
+const formidable = require('formidable');
 
 const app = express();
 app.engine('.hbs', hbs());
@@ -8,6 +9,7 @@ app.set('view engine', '.hbs');
 
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.use('/user', (req, res) => {
   res.render('forbidden');
@@ -42,14 +44,23 @@ app.get('/contact', (req, res) => {
 });
 
 app.post('/contact/send-message', (req, res) => {
-  const { author, sender, title, message } = req.body;
-  if(author && sender && title && message) {
-    res.render('contact', { sendvisibility: "flex", errvisibility: "none" });
-  }
-  else {
-    res.render('contact', { sendvisibility: "none", errvisibility: "flex"});
-  }
+  new formidable.IncomingForm().parse(req, (err, fields, files) => {
+    const { author, sender, title, message } = fields;
+    const imgFile = files.imgFile.name;
+
+    if (err) {
+      console.error('Error', err)
+      throw err
+    }
+    
+    if(author && sender && title && message && imgFile) {
+      res.render('contact', { sendvisibility: "flex", errvisibility: "none", imgFile: imgFile });
+    } else {
+      res.render('contact', { sendvisibility: "none", errvisibility: "flex"});
+    }
+  })
 });
+
 
 app.use((req, res) => {
   res.status(404).render('404');
